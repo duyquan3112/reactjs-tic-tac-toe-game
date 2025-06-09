@@ -1,21 +1,4 @@
-import { useState } from "react";
-
-// TODO: need optimize
-const initialGameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-export default function GameBoard({ onSelectSquare, gameTurns }) {
-  const gameBoard = initialGameBoard;
-
-  for (const turn of gameTurns) {
-    const { square, player } = turn;
-    const { row, col } = square;
-    gameBoard[row][col] = player;
-  }
-
+export default function GameBoard({ onSelectSquare, gameBoard }) {
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (

@@ -2,12 +2,29 @@ import { useState } from "react";
 import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
-import { deriveActivePlayer } from "./helpers/PlayerHelper";
+import { deriveActivePlayer, deriveWinner } from "./helpers/PlayerHelper";
+import AppConstant from "./constants/AppConstants";
 
 function App() {
   const [gameTurns, setGameTurns] = useState([]);
 
   const activePlayer = deriveActivePlayer(gameTurns);
+
+  const gameBoard = AppConstant.initialGameBoard;
+
+  const player1Symbol = AppConstant.player1DefaultSymbol;
+
+  const player2Symbol = AppConstant.player2DefaultSymbol;
+
+  // update gameBoard after select square
+  for (const turn of gameTurns) {
+    const { square, player } = turn;
+    const { row, col } = square;
+    gameBoard[row][col] = player;
+  }
+
+  // derive winner after gameTurns were changed (after player selects squares)
+  const winner = deriveWinner(gameBoard);
 
   function onSelectSquare(rowIndex, colIndex) {
     setGameTurns((currentTurns) => {
@@ -23,22 +40,24 @@ function App() {
       return updatedTurns;
     });
   }
+
   return (
     <main>
       <div id="game-container">
         <ol id="players" className="highlight-player">
           <Player
             initialName="Player 1"
-            symbol="X"
-            isActivePlayer={activePlayer === "X"}
+            symbol={player1Symbol}
+            isActivePlayer={activePlayer === player1Symbol}
           />
           <Player
             initialName="Player 2"
-            symbol="O"
-            isActivePlayer={activePlayer === "O"}
+            symbol={player2Symbol}
+            isActivePlayer={activePlayer === player2Symbol}
           />
         </ol>
-        <GameBoard onSelectSquare={onSelectSquare} gameTurns={gameTurns} />
+        {winner && <p>You won, {winner}!</p>}
+        <GameBoard onSelectSquare={onSelectSquare} gameBoard={gameBoard} />
       </div>
       <Log gameTurns={gameTurns} />
     </main>
