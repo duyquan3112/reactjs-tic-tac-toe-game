@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-export default function Player({ initialName, symbol, isActivePlayer }) {
+export default function Player({
+  initialName,
+  symbol,
+  isActivePlayer,
+  onChangePlayerName,
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName);
 
@@ -12,11 +17,13 @@ export default function Player({ initialName, symbol, isActivePlayer }) {
   let buttonText = isEditing ? "Save" : "Edit";
 
   function onClickEdit() {
+    if (isEditing) {
+      onChangePlayerName(symbol, name);
+    }
     setIsEditing((editing) => !editing);
   }
 
   function onChange(event) {
-    console.log(event);
     setName(event.target.value);
   }
 
